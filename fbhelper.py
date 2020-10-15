@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 import time
 #datetime
 from datetime import datetime
-
+from datetime import date
 #to read and edit excel files
 import pandas as pd
 from pandas import ExcelWriter
@@ -157,9 +157,13 @@ if __name__ == '__main__':
     
     # fbpy.harvardfriends('https://www.facebook.com/melissa.meng.714/friends_college')
     
-    fbpy.chill(60*4)
-    fbpy.harvardfriends('https://www.facebook.com/groups/516889128701490/members/things_in_common', 1000)
-    fbpy.chill(60*4)
-    fbpy.harvardfriends('https://www.facebook.com/groups/455303088290544/members/things_in_common', 1000)
-
-    
+    today = str(date.today())
+    if today == '2020-10-15':
+        fbpy.harvardfriends('https://www.facebook.com/groups/516889128701490/members/things_in_common', 500)
+    elif today == '2020-10-16':
+        fbpy.harvardfriends('https://www.facebook.com/groups/455303088290544/members/things_in_common', 500)
+    elif today == '2020-10-17':
+        fbpy.harvardfriends('https://www.facebook.com/groups/455303088290544/members/things_in_common', 500)
+    else:
+        fbpy.harvardfriends('https://www.facebook.com/groups/zoommemes/members/things_in_common', 500)
+        
