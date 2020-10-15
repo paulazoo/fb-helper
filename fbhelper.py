@@ -49,10 +49,11 @@ class FbHelp:
 
     def harvardfriends(self, friends_url):
         friend_requests_sent = 0
+        skip = 0
 
         self.driver.get(friends_url)
         #wait to load
-        time.sleep(2)
+        time.sleep(10)
         
         '''
         if scroll too much elements will be unclickable :/
@@ -84,9 +85,14 @@ class FbHelp:
             add_friend_buttons = self.driver.find_elements_by_xpath("//div[@aria-label='Add Friend']")
     
             for btn in add_friend_buttons:
-                time.sleep(1)
-                btn.click()
-                friend_requests_sent = friend_requests_sent + 1
+                time.sleep(2)
+                try:
+                    btn.click()
+                    friend_requests_sent = friend_requests_sent + 1
+                except:
+                    self.driver.find_elements_by_xpath("//*[contains(text(), 'OK')]").click()
+                    print("An exception occurred")
+                    skip = skip + 1
             
             # ask_more_friends = input('Scroll down for more add friend buttons?')
             ask_more_friends = 1
