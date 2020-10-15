@@ -2,12 +2,16 @@
 from selenium import webdriver
 #keyboard manipulation
 from selenium.webdriver.common.keys import Keys
+#webdriver options
+from selenium.webdriver.chrome.options import Options
 #folder manipulation
 import os
 #env file for passwords and stuff
 from dotenv import load_dotenv
 #keep track of time
 import time
+#datetime
+from datetime import datetime
 
 #to read and edit excel files
 import pandas as pd
@@ -23,9 +27,21 @@ class FbHelp:
         self.username = username
         self.password = password
 
-        #open webdriver chrome browser
-        self.driver = webdriver.Chrome('./chromedriver.exe')
+        #set up chrome driver
+        option = Options()
 
+        #stop notif popup
+        option.add_argument("--disable-infobars")
+        option.add_argument("start-maximized")
+        option.add_argument("--disable-extensions")
+
+        # Pass the argument 1 to allow and 2 to block
+        option.add_experimental_option("prefs", { 
+            "profile.default_content_setting_values.notifications": 2 
+        })
+
+        #open webdriver chrome browser
+        self.driver = webdriver.Chrome(chrome_options=option, executable_path='./chromedriver.exe')
 
     #define logging in
     def login(self):
@@ -47,7 +63,7 @@ class FbHelp:
         self.driver.close()
         print('closed out')
 
-    def harvardfriends(self, friends_url):
+    def harvardfriends(self, friends_url, max_friend_requests):
         friend_requests_sent = 0
         skip = 0
 
@@ -90,16 +106,40 @@ class FbHelp:
                     btn.click()
                     friend_requests_sent = friend_requests_sent + 1
                 except:
-                    self.driver.find_elements_by_xpath("//*[contains(text(), 'OK')]").click()
-                    print("An exception occurred")
-                    skip = skip + 1
+                    try:
+                        self.driver.find_element_by_xpath("//div[@aria-label='Close']").click()
+                        skip = skip + 1
+                    except:
+                        print("An exception occurred")
             
+            if friend_requests_sent != 0:
+                print(friend_requests_sent)
+
             # ask_more_friends = input('Scroll down for more add friend buttons?')
             ask_more_friends = 1
-            print(friend_requests_sent)
 
-            if ask_more_friends == 0:
+            if ask_more_friends == 0 or friend_requests_sent > max_friend_requests:
                 more_friends = False
+
+    def chill(self, max_chilling_time):
+        print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        chilling_time = 0
+        
+        while chilling_time < max_chilling_time:
+            chilling_time = chilling_time + 1
+            self.driver.get('https://congregate.live')
+            time.sleep(20)
+            self.driver.get('https://class.congregate.live')
+            time.sleep(20)
+            self.driver.get('https://collegearch.org')
+            time.sleep(20)
+            print('chilling...')
+            print(chilling_time)
+
+        print('chill finished!')
+        print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        print(chilling_time)
+
 
 if __name__ == '__main__':
     #load env
@@ -114,7 +154,12 @@ if __name__ == '__main__':
     
     #login
     fbpy.login()
-    fbpy.harvardfriends('https://www.facebook.com/melissa.meng.714/friends_college')
-
+    
+    # fbpy.harvardfriends('https://www.facebook.com/melissa.meng.714/friends_college')
+    
+    fbpy.chill(60*4)
+    fbpy.harvardfriends('https://www.facebook.com/groups/516889128701490/members/things_in_common', 1000)
+    fbpy.chill(60*4)
+    fbpy.harvardfriends('https://www.facebook.com/groups/455303088290544/members/things_in_common', 1000)
 
     
