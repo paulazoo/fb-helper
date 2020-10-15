@@ -48,6 +48,8 @@ class FbHelp:
         print('closed out')
 
     def harvardfriends(self, friends_url):
+        friend_requests_sent = 0
+
         self.driver.get(friends_url)
         #wait to load
         time.sleep(2)
@@ -82,11 +84,13 @@ class FbHelp:
             add_friend_buttons = self.driver.find_elements_by_xpath("//div[@aria-label='Add Friend']")
     
             for btn in add_friend_buttons:
-                time.sleep(2)
+                time.sleep(1)
                 btn.click()
+                friend_requests_sent = friend_requests_sent + 1
             
             # ask_more_friends = input('Scroll down for more add friend buttons?')
             ask_more_friends = 1
+            print(friend_requests_sent)
 
             if ask_more_friends == 0:
                 more_friends = False
